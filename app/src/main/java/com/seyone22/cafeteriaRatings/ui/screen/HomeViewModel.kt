@@ -8,7 +8,6 @@ import com.seyone22.cafeteriaRatings.data.Satisfied
 import com.seyone22.cafeteriaRatings.data.VeryDissatisfied
 import com.seyone22.cafeteriaRatings.data.VerySatisfied
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
 
 class HomeViewModel : ViewModel() {
     val ratingsList = listOf(

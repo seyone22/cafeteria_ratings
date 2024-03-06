@@ -14,7 +14,6 @@ import androidx.work.ExistingPeriodicWorkPolicy
 import androidx.work.NetworkType
 import androidx.work.PeriodicWorkRequestBuilder
 import androidx.work.WorkManager
-import com.seyone22.cafeteriaRatings.data.DataStoreManager
 import com.seyone22.cafeteriaRatings.ui.theme.CafeteriaRatingsTheme
 import com.seyone22.cafeteriaRatings.ui.workers.PostEmailWorker
 import java.util.concurrent.TimeUnit

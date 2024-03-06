@@ -27,7 +27,6 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.seyone22.cafeteriaRatings.data.DataStoreManager
 import com.seyone22.cafeteriaRatings.ui.AppViewModelProvider
-import kotlinx.coroutines.flow.first
 
 @Composable
 fun HomeScreen(
