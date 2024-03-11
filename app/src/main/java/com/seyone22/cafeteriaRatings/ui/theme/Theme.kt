@@ -190,6 +190,7 @@ import com.seyone22.fingerprinter.ui.theme.tertiaryDarkMediumContrast
 import com.seyone22.fingerprinter.ui.theme.tertiaryLight
 import com.seyone22.fingerprinter.ui.theme.tertiaryLightHighContrast
 import com.seyone22.fingerprinter.ui.theme.tertiaryLightMediumContrast
+import kotlinx.serialization.json.JsonNull.content
 
 private val DarkColorScheme = darkColorScheme(
     primary = Purple80,
@@ -439,7 +440,7 @@ fun CafeteriaRatingsTheme(
     if (!view.isInEditMode) {
         SideEffect {
             val window = (view.context as Activity).window
-            window.statusBarColor = colorScheme.background.toArgb()
+            window.statusBarColor = Color.Transparent.toArgb()
             WindowCompat.getInsetsController(window, view).isAppearanceLightStatusBars = !darkTheme
         }
     }
