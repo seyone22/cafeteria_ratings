@@ -12,25 +12,17 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.windowsizeclass.ExperimentalMaterial3WindowSizeClassApi
 import androidx.compose.material3.windowsizeclass.calculateWindowSizeClass
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
-import androidx.work.Constraints
 import androidx.work.CoroutineWorker
-import androidx.work.ExistingPeriodicWorkPolicy
-import androidx.work.NetworkType
-import androidx.work.PeriodicWorkRequestBuilder
-import androidx.work.WorkManager
 import androidx.work.WorkerParameters
 import com.seyone22.cafeteriaRatings.data.DataStoreManager
 import com.seyone22.cafeteriaRatings.data.SecureDataStoreManager
 import com.seyone22.cafeteriaRatings.data.externalApi.ExternalApi
-import com.seyone22.cafeteriaRatings.data.externalApi.Review
-import com.seyone22.cafeteriaRatings.ui.screen.home.RatingsStore
+import com.seyone22.cafeteriaRatings.model.RatingsStore
+import com.seyone22.cafeteriaRatings.model.Review
 import com.seyone22.cafeteriaRatings.ui.theme.CafeteriaRatingsTheme
-import com.seyone22.cafeteriaRatings.ui.workers.PostEmailWorker
 import kotlinx.coroutines.flow.first
 import java.time.ZonedDateTime
 import java.time.format.DateTimeFormatter
-import java.util.concurrent.TimeUnit
 
 class MainActivity : ComponentActivity() {
     @OptIn(ExperimentalMaterial3WindowSizeClassApi::class)
@@ -70,9 +62,9 @@ class PostEmailWorker(appContext: Context, workerParams: WorkerParameters) :
         return try {
             val response = ExternalApi.retrofitService.postDailyReview(
                 Review(
-                    date = getCurrentTimeInISO8601(),
-                    rating_average = (sum.toFloat() / count.toFloat()),
-                    rating_count = count.toFloat()
+                    timestamp = getCurrentTimeInISO8601(),
+                    rating = (sum.toFloat() / count.toFloat()),
+                    site = "count.toFloat()"
                 ), "Token $token"
             )
             if (response.status == "success") {

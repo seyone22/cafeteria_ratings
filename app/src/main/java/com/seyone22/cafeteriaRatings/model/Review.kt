@@ -6,5 +6,7 @@ import kotlinx.serialization.Serializable
 data class Review(
     val timestamp: String,
     val rating: Float,
-    val site: Float,
-)
+    val site: String,
+) {
+    val status: String = ""
+}

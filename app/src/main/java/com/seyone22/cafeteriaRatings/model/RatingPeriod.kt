@@ -1,6 +1,7 @@
 package com.seyone22.cafeteriaRatings.model
 
 import com.seyone22.cafeteriaRatings.data.DataStoreManager
+import com.seyone22.cafeteriaRatings.getCurrentTimeInISO8601
 
 data class RatingPeriod (
     val date : String,
@@ -18,7 +19,7 @@ suspend fun CreateRatingPeriod(rating : List<Rating>, dataStoreManager: DataStor
     }
 
     return RatingPeriod(
-        date = System.currentTimeMillis().toString(),
+        date = getCurrentTimeInISO8601(),
         rating_average = (reviewSum / reviewCount),
         rating_count = reviewCount,
         site = dataStoreManager.getFromDataStore("SITE").toString()

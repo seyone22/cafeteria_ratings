@@ -54,6 +54,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.seyone22.cafeteriaRatings.R
 import com.seyone22.cafeteriaRatings.data.DataStoreManager
 import com.seyone22.cafeteriaRatings.data.foregroundColor
+import com.seyone22.cafeteriaRatings.model.RatingsStore
 import com.seyone22.cafeteriaRatings.ui.AppViewModelProvider
 import com.seyone22.cafeteriaRatings.ui.navigation.NavigationDestination
 import kotlinx.coroutines.CoroutineScope

@@ -70,10 +70,10 @@ import com.seyone22.cafeteriaRatings.data.copyImageToAppDirectory
 import com.seyone22.cafeteriaRatings.data.externalApi.ExternalApi
 import com.seyone22.cafeteriaRatings.getCurrentTimeInISO8601
 import com.seyone22.cafeteriaRatings.model.RatingPeriod
+import com.seyone22.cafeteriaRatings.model.RatingsStore
 import com.seyone22.cafeteriaRatings.model.Review
 import com.seyone22.cafeteriaRatings.ui.AppViewModelProvider
 import com.seyone22.cafeteriaRatings.ui.navigation.NavigationDestination
-import com.seyone22.cafeteriaRatings.ui.screen.home.RatingsStore
 import com.seyone22.cafeteriaRatings.ui.workers.PostEmailWorker
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -166,6 +166,8 @@ fun ConnectionsSettingsList(
     var allowAutomaticUpdates by remember { mutableStateOf(isWorkScheduled(context)) }
     var editKey by remember { mutableStateOf(false) }
     var key by remember { mutableStateOf("") }
+    var site by remember { mutableStateOf("") }
+    var editSite by remember { mutableStateOf(false) }
     var serverAddress by remember { mutableStateOf("") }
     var editServerAddress by remember { mutableStateOf(false) }
     var desiredHour = 0
@@ -174,6 +176,8 @@ fun ConnectionsSettingsList(
     LaunchedEffect(Unit) {
         allowAutomaticUpdates =
             secureDataStoreManager.getFromDataStore("ALLOW_AUTO").first().toString().toBoolean()
+        site =
+            secureDataStoreManager.getFromDataStore("SITE").first().toString()
         serverAddress = secureDataStoreManager.getFromDataStore("SERVER_ADDRESS").first().toString()
         key = maskString(secureDataStoreManager.getFromDataStore("API_KEY").first().toString(), 5)
         val desiredHourString =
@@ -229,6 +233,16 @@ fun ConnectionsSettingsList(
                 }
             }
         )
+        // Setting to set Site
+        ListItem(
+            headlineContent = { Text(text = "Site Name") },
+            supportingContent = {
+                Text(text = site)
+            },
+            modifier = Modifier.clickable {
+                editSite = true
+            }
+        )
         // Setting to change API Key
         ListItem(
             headlineContent = { Text(text = "API Key") },
@@ -262,10 +276,9 @@ fun ConnectionsSettingsList(
                             val ratings =
                                 ((dataStoreManager.getFromDataStore("RATINGS")).first() as RatingsStore)
                             ExternalApi.retrofitService.postDailyReview(
-                                RatingPeriod(
-                                    date = getCurrentTimeInISO8601(),
-                                    rating_average = ratings.totalRatingScore.toFloat() / ratings.ratingCount.toFloat(),
-                                    rating_count = ratings.ratingCount.toInt(),
+                                Review(
+                                    timestamp = getCurrentTimeInISO8601(),
+                                    rating = 69f,
                                     site = dataStoreManager.getFromDataStore("SITE").first().toString()
                                 ),
                                 "Token ${
@@ -288,6 +301,76 @@ fun ConnectionsSettingsList(
         )
     }
 
+    if (editSite) {
+        Dialog(
+            onDismissRequest = { editSite = false },
+        ) {
+// Draw a rectangle shape with rounded corners inside the dialog
+            var newSite by remember { mutableStateOf("") }
+            val focusManager = LocalFocusManager.current
+
+            Card(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(235.dp)
+                    .padding(16.dp),
+                shape = RoundedCornerShape(16.dp),
+            ) {
+                Column(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(16.dp, 0.dp),
+                    verticalArrangement = Arrangement.Center,
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                ) {
+                    Text(
+                        text = "Enter the Site name (All Caps)",
+                        style = MaterialTheme.typography.titleLarge
+                    )
+                    OutlinedTextField(
+                        modifier = Modifier.padding(0.dp, 8.dp),
+                        value = newSite,
+                        onValueChange = {
+                            newSite = it
+                        },
+                        label = { Text("Site Name") },
+                        singleLine = true,
+                        keyboardActions = KeyboardActions(onDone = {
+                            focusManager.moveFocus(
+                                FocusDirection.Next
+                            )
+                        })
+                    )
+
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth(),
+                        horizontalArrangement = Arrangement.Center,
+                    ) {
+                        TextButton(
+                            onClick = { editKey = false },
+                            modifier = Modifier.padding(8.dp),
+                        ) {
+                            Text("Dismiss")
+                        }
+                        TextButton(
+                            onClick = {
+                                site = newSite
+                                coroutineScope.launch {
+                                    secureDataStoreManager.saveToDataStore("SITE", site)
+                                    editKey = false
+                                }
+                            },
+                            modifier = Modifier.padding(8.dp),
+                            enabled = newSite.isNotBlank()
+                        ) {
+                            Text("Confirm")
+                        }
+                    }
+                }
+            }
+        }
+    }
     if (editKey) {
         Dialog(
             onDismissRequest = { editKey = false },

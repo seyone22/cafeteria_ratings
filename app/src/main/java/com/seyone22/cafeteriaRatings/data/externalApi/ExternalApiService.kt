@@ -25,7 +25,7 @@ private val retrofit = Retrofit.Builder()
 interface ExternalApiService {
     @POST("/api/reviews/")
     suspend fun postDailyReview(
-        @Body ratingPeriod: RatingPeriod,
+        @Body review: Review,
         @Header("Authorization") authorization : String
     ) : Review
 }
