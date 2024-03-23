@@ -3,10 +3,10 @@ package com.seyone22.cafeteriaRatings.ui.screen.home
 import android.content.Context
 import androidx.lifecycle.ViewModel
 import com.seyone22.cafeteriaRatings.data.DataStoreManager
-import com.seyone22.cafeteriaRatings.data.Dissatisfied
-import com.seyone22.cafeteriaRatings.data.Neutral
-import com.seyone22.cafeteriaRatings.data.Rating
-import com.seyone22.cafeteriaRatings.data.Satisfied
+import com.seyone22.cafeteriaRatings.model.Dissatisfied
+import com.seyone22.cafeteriaRatings.model.Neutral
+import com.seyone22.cafeteriaRatings.model.Rating
+import com.seyone22.cafeteriaRatings.model.Satisfied
 import kotlinx.coroutines.flow.MutableStateFlow
 
 class HomeViewModel : ViewModel() {

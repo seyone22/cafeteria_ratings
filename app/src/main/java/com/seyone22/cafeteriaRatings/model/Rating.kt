@@ -1,4 +1,4 @@
-package com.seyone22.cafeteriaRatings.data
+package com.seyone22.cafeteriaRatings.model
 
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.SentimentDissatisfied

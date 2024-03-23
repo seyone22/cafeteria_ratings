@@ -62,16 +62,17 @@ import androidx.work.NetworkType
 import androidx.work.PeriodicWorkRequestBuilder
 import androidx.work.WorkInfo
 import androidx.work.WorkManager
-import com.seyone22.cafeteriaRatings.ui.navigation.NavigationDestination
 import com.seyone22.cafeteriaRatings.R
 import com.seyone22.cafeteriaRatings.calculateInitialDelay
 import com.seyone22.cafeteriaRatings.data.DataStoreManager
 import com.seyone22.cafeteriaRatings.data.SecureDataStoreManager
 import com.seyone22.cafeteriaRatings.data.copyImageToAppDirectory
 import com.seyone22.cafeteriaRatings.data.externalApi.ExternalApi
-import com.seyone22.cafeteriaRatings.data.externalApi.Review
 import com.seyone22.cafeteriaRatings.getCurrentTimeInISO8601
+import com.seyone22.cafeteriaRatings.model.RatingPeriod
+import com.seyone22.cafeteriaRatings.model.Review
 import com.seyone22.cafeteriaRatings.ui.AppViewModelProvider
+import com.seyone22.cafeteriaRatings.ui.navigation.NavigationDestination
 import com.seyone22.cafeteriaRatings.ui.screen.home.RatingsStore
 import com.seyone22.cafeteriaRatings.ui.workers.PostEmailWorker
 import kotlinx.coroutines.CoroutineScope
@@ -261,10 +262,11 @@ fun ConnectionsSettingsList(
                             val ratings =
                                 ((dataStoreManager.getFromDataStore("RATINGS")).first() as RatingsStore)
                             ExternalApi.retrofitService.postDailyReview(
-                                Review(
+                                RatingPeriod(
                                     date = getCurrentTimeInISO8601(),
                                     rating_average = ratings.totalRatingScore.toFloat() / ratings.ratingCount.toFloat(),
-                                    rating_count = ratings.ratingCount.toFloat()
+                                    rating_count = ratings.ratingCount.toInt(),
+                                    site = dataStoreManager.getFromDataStore("SITE").first().toString()
                                 ),
                                 "Token ${
                                     secureDataStoreManager.getFromDataStore("API_KEY").first()
@@ -285,7 +287,6 @@ fun ConnectionsSettingsList(
             }
         )
     }
-
 
     if (editKey) {
         Dialog(
