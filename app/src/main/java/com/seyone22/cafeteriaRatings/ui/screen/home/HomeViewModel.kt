@@ -2,7 +2,6 @@ package com.seyone22.cafeteriaRatings.ui.screen.home
 
 import android.content.Context
 import android.util.Log
-import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.ViewModel
 import com.seyone22.cafeteriaRatings.data.DataStoreManager
 import com.seyone22.cafeteriaRatings.data.SecureDataStoreManager
@@ -11,13 +10,12 @@ import com.seyone22.cafeteriaRatings.getCurrentTimeInISO8601
 import com.seyone22.cafeteriaRatings.model.Dissatisfied
 import com.seyone22.cafeteriaRatings.model.Neutral
 import com.seyone22.cafeteriaRatings.model.Rating
-import com.seyone22.cafeteriaRatings.model.RatingPeriod
 import com.seyone22.cafeteriaRatings.model.RatingsStore
-import com.seyone22.cafeteriaRatings.model.Review
 import com.seyone22.cafeteriaRatings.model.Satisfied
 import com.seyone22.cafeteriaRatings.model.add
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.first
+import kotlinx.serialization.json.Json
 
 class HomeViewModel : ViewModel() {
     val ratingsList = listOf(
@@ -32,32 +30,43 @@ class HomeViewModel : ViewModel() {
         rating: Rating,
         context : Context,
         dataStoreManager: DataStoreManager = DataStoreManager(context)
-    ) {
-        currentSessionRatings.value.add(rating)
-        dataStoreManager.saveRatingToDataStore(currentSessionRatings.value)
+    ) : Boolean {
+        try {
+            val s = SecureDataStoreManager(context)
 
-        // Push rating to server
-        postReview(rating, context)
+            currentSessionRatings.value.add(rating)
+            dataStoreManager.saveRatingToDataStore(currentSessionRatings.value)
+
+            val allowAuto = s.getFromDataStore("ALLOW_AUTO").toString().toBoolean()
+            // Push rating to server
+            if (allowAuto) {
+                postReview(rating, s)
+            }
+
+            return true
+        } catch (_: Exception) {
+            return false
+        }
     }
 }
 
 suspend fun postReview(
     rating : Rating,
-    context : Context
+    s : SecureDataStoreManager
 ) {
-    val s = SecureDataStoreManager(context)
-    val d = DataStoreManager(context)
-
     try {
+        val token = s.getFromDataStore("API_KEY").first()
+        val site = s.getFromDataStore("SITE").first()
+
+        val jsonString = """
+    {"date":"${getCurrentTimeInISO8601()}","rating":${rating.value},"site":"$site"}""".trimIndent()
+
+        val json = Json.parseToJsonElement(jsonString)
+
         ExternalApi.retrofitService.postDailyReview(
-            Review(
-                timestamp = getCurrentTimeInISO8601(),
-                rating = rating.value.toFloat(),
-                site = d.getFromDataStore("SITE").first().toString()
-            ),
-            "Token ${
-                s.getFromDataStore("API_KEY").first()
-            }")
+            json,
+            "Token $token"
+        )
     } catch(e : Exception) {
         Log.d("TAG", "postReview: $e")
     }

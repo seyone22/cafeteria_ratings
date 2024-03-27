@@ -26,6 +26,7 @@ class DataStoreManager (private val context: Context) {
         val ALLOW_AUTO = stringPreferencesKey("ALLOW_AUTO")
         val API_KEY = stringPreferencesKey("API_KEY")
         val SHOW_DEBUG = stringPreferencesKey("SHOW_DEBUG")
+        val SITE = stringPreferencesKey("SITE")
     }
 
     suspend fun saveRatingToDataStore(ratingsStore: RatingsStore) {
@@ -44,7 +45,7 @@ class DataStoreManager (private val context: Context) {
         }
     }
 
-    suspend fun getFromDataStore(key: String): Flow<Any> {
+    fun getFromDataStore(key: String): Flow<Any> {
         return when (key) {
             "RATINGS" -> context.dataStore.data.map { prefs ->
                 RatingsStore(
@@ -72,6 +73,9 @@ class DataStoreManager (private val context: Context) {
             }
             "SHOW_DEBUG" -> context.dataStore.data.map { prefs ->
                 prefs[SHOW_DEBUG] ?: "false"
+            }
+            "SITE" -> context.dataStore.data.map { prefs ->
+                prefs[SITE] ?: ""
             }
             else -> throw IllegalArgumentException("Invalid key: $key")
         }

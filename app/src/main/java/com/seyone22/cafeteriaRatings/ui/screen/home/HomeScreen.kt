@@ -3,6 +3,7 @@ package com.seyone22.cafeteriaRatings.ui.screen.home
 import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
+import android.util.Log
 import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Box
@@ -178,15 +179,18 @@ fun HomeScreen(
                         IconButton(
                             onClick = {
                                 isButtonClicked = !isButtonClicked
+                                var success = false
                                 coroutineScope.launch {
-                                    viewModel.recordRating(rating, context)
+                                    success = viewModel.recordRating(rating, context)
                                 }
-                                Toast.makeText(
-                                    context,
-                                    "Thank you for your feedback!",
-                                    Toast.LENGTH_SHORT
-                                )
-                                    .show()
+                                if (success) {
+                                    Toast.makeText(
+                                        context,
+                                        "Thank you for your feedback!",
+                                        Toast.LENGTH_SHORT
+                                    )
+                                        .show()
+                                }
                             },
                             modifier = Modifier
                                 .width(240.dp)
@@ -284,15 +288,18 @@ fun HomeScreen(
                             IconButton(
                                 onClick = {
                                     isButtonClicked = !isButtonClicked
+                                    var success = false
                                     coroutineScope.launch {
-                                        viewModel.recordRating(rating, context)
+                                        success = viewModel.recordRating(rating, context)
                                     }
-                                    Toast.makeText(
-                                        context,
-                                        "Thank you for your feedback!",
-                                        Toast.LENGTH_SHORT
-                                    )
-                                        .show()
+                                    if (success) {
+                                        Toast.makeText(
+                                            context,
+                                            "Thank you for your feedback!",
+                                            Toast.LENGTH_SHORT
+                                        )
+                                            .show()
+                                    }
                                 },
                                 modifier = Modifier
                                     .width(240.dp)
@@ -339,7 +346,7 @@ fun getBitmapFromYourSource(context: Context): ImageBitmap? {
 
 @Composable
 fun DebugData(
-    viewModel : HomeViewModel,
+    viewModel: HomeViewModel,
     foreground: Color,
     dataStoreManager: DataStoreManager = DataStoreManager(LocalContext.current)
 ) {
@@ -361,8 +368,14 @@ fun DebugData(
         Column(
             modifier = Modifier.padding(0.dp, 0.dp, 16.dp, 0.dp)
         ) {
-            Text(text = "Number of Ratings: ${currentSessionRatings.ratingCount}", color = foreground)
-            Text(text = "Total Rating Value: ${currentSessionRatings.totalRatingScore}", color = foreground)
+            Text(
+                text = "Number of Ratings: ${currentSessionRatings.ratingCount}",
+                color = foreground
+            )
+            Text(
+                text = "Total Rating Value: ${currentSessionRatings.totalRatingScore}",
+                color = foreground
+            )
             if (currentSessionRatings.ratingCount != 0) {
                 Text(
                     text = "Average Rating Value: ${(currentSessionRatings.totalRatingScore / currentSessionRatings.ratingCount)}",
@@ -373,7 +386,10 @@ fun DebugData(
         Column {
             Text(text = "Satisfied: ${currentSessionRatings.countSatisfied}", color = foreground)
             Text(text = "Neutral: ${currentSessionRatings.countNeutral}", color = foreground)
-            Text(text = "Dissatisfied: ${currentSessionRatings.countDissatisfied}", color = foreground)
+            Text(
+                text = "Dissatisfied: ${currentSessionRatings.countDissatisfied}",
+                color = foreground
+            )
         }
     }
 }

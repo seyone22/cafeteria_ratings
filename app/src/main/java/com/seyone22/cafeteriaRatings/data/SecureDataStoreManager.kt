@@ -16,6 +16,7 @@ class SecureDataStoreManager(private val context: Context) {
     companion object {
         const val API_KEY = "API_KEY"
         const val ALLOW_AUTO = "ALLOW_AUTO"
+        const val SITE = "SITE"
     }
 
     private val masterKey = MasterKey.Builder(context)

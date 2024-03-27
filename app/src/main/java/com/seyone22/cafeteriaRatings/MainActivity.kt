@@ -60,14 +60,9 @@ class PostEmailWorker(appContext: Context, workerParams: WorkerParameters) :
         val allowAuto = secureDataStoreManager.getFromDataStore("ALLOW_AUTO").toString().toBoolean()
 
         return try {
-            val response = ExternalApi.retrofitService.postDailyReview(
-                Review(
-                    timestamp = getCurrentTimeInISO8601(),
-                    rating = (sum.toFloat() / count.toFloat()),
-                    site = "count.toFloat()"
-                ), "Token $token"
-            )
-            if (response.status == "success") {
+            val response = true
+
+            if (response) {
                 dataStoreManager.saveRatingToDataStore(RatingsStore(0,0f))
                 Result.success()
             } else {

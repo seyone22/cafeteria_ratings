@@ -69,7 +69,6 @@ import com.seyone22.cafeteriaRatings.data.SecureDataStoreManager
 import com.seyone22.cafeteriaRatings.data.copyImageToAppDirectory
 import com.seyone22.cafeteriaRatings.data.externalApi.ExternalApi
 import com.seyone22.cafeteriaRatings.getCurrentTimeInISO8601
-import com.seyone22.cafeteriaRatings.model.RatingPeriod
 import com.seyone22.cafeteriaRatings.model.RatingsStore
 import com.seyone22.cafeteriaRatings.model.Review
 import com.seyone22.cafeteriaRatings.ui.AppViewModelProvider
@@ -257,7 +256,7 @@ fun ConnectionsSettingsList(
         ListItem(
             headlineContent = { Text(text = "Server Address") },
             supportingContent = {
-                Text(text = serverAddress)
+                Text(text = "https://survey.etsteas.co.uk/api/reviews")
             },
             modifier = Modifier.clickable {
                 editServerAddress = true
@@ -274,18 +273,7 @@ fun ConnectionsSettingsList(
                     val pushData = withContext(Dispatchers.IO) {
                         try {
                             val ratings =
-                                ((dataStoreManager.getFromDataStore("RATINGS")).first() as RatingsStore)
-                            ExternalApi.retrofitService.postDailyReview(
-                                Review(
-                                    timestamp = getCurrentTimeInISO8601(),
-                                    rating = 69f,
-                                    site = dataStoreManager.getFromDataStore("SITE").first().toString()
-                                ),
-                                "Token ${
-                                    secureDataStoreManager.getFromDataStore("API_KEY").first()
-                                        .toString()
-                                }"
-                            )
+                                true
                         } catch (e: Exception) {
                             if (e is HttpException) {
                                 val errorBody = e.response()?.errorBody()?.string()
@@ -295,7 +283,6 @@ fun ConnectionsSettingsList(
                             }
                         }
                     }
-
                 }
             }
         )
@@ -306,7 +293,7 @@ fun ConnectionsSettingsList(
             onDismissRequest = { editSite = false },
         ) {
 // Draw a rectangle shape with rounded corners inside the dialog
-            var newSite by remember { mutableStateOf("") }
+            var newSite by remember { mutableStateOf(site) }
             val focusManager = LocalFocusManager.current
 
             Card(
@@ -348,7 +335,7 @@ fun ConnectionsSettingsList(
                         horizontalArrangement = Arrangement.Center,
                     ) {
                         TextButton(
-                            onClick = { editKey = false },
+                            onClick = { editSite = false },
                             modifier = Modifier.padding(8.dp),
                         ) {
                             Text("Dismiss")
@@ -358,7 +345,7 @@ fun ConnectionsSettingsList(
                                 site = newSite
                                 coroutineScope.launch {
                                     secureDataStoreManager.saveToDataStore("SITE", site)
-                                    editKey = false
+                                    editSite = false
                                 }
                             },
                             modifier = Modifier.padding(8.dp),
@@ -441,79 +428,12 @@ fun ConnectionsSettingsList(
             }
         }
     }
-    if (editServerAddress) {
-        Dialog(
-            onDismissRequest = { editServerAddress = false },
-        ) {
-// Draw a rectangle shape with rounded corners inside the dialog
-            var newAddress by remember { mutableStateOf(serverAddress) }
-            val focusManager = LocalFocusManager.current
-
-            Card(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(235.dp)
-                    .padding(16.dp),
-                shape = RoundedCornerShape(16.dp),
-            ) {
-                Column(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .padding(16.dp, 0.dp),
-                    verticalArrangement = Arrangement.Center,
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                ) {
-                    Text(
-                        text = "Enter New Server Address",
-                        style = MaterialTheme.typography.titleLarge
-                    )
-                    OutlinedTextField(
-                        modifier = Modifier.padding(0.dp, 8.dp),
-                        value = newAddress,
-                        onValueChange = {
-                            newAddress = it
-                        },
-                        label = { Text("Server Address") },
-                        singleLine = true,
-                        keyboardActions = KeyboardActions(onDone = {
-                            focusManager.moveFocus(
-                                FocusDirection.Next
-                            )
-                        })
-                    )
-
-                    Row(
-                        modifier = Modifier
-                            .fillMaxWidth(),
-                        horizontalArrangement = Arrangement.Center,
-                    ) {
-                        TextButton(
-                            onClick = { editServerAddress = false },
-                            modifier = Modifier.padding(8.dp),
-                        ) {
-                            Text("Dismiss")
-                        }
-                        TextButton(
-                            onClick = {
-                                serverAddress = newAddress
-                                coroutineScope.launch {
-                                    secureDataStoreManager.saveToDataStore(
-                                        "SERVER_ADDRESS",
-                                        serverAddress
-                                    )
-                                    editServerAddress = false
-                                }
-                            },
-                            modifier = Modifier.padding(8.dp),
-                            enabled = newAddress.isNotBlank()
-                        ) {
-                            Text("Confirm")
-                        }
-                    }
-                }
-            }
-        }
-    }
+    Toast.makeText(
+        context,
+        "Please contact the developer to modify this.",
+        Toast.LENGTH_SHORT
+    )
+        .show()
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
