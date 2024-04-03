@@ -37,9 +37,10 @@ class HomeViewModel : ViewModel() {
             currentSessionRatings.value.add(rating)
             dataStoreManager.saveRatingToDataStore(currentSessionRatings.value)
 
-            val allowAuto = s.getFromDataStore("ALLOW_AUTO").toString().toBoolean()
+
             // Push rating to server
-            if (allowAuto) {
+            if (true) {
+                Log.d("TAG", "HomeScreen inside: ")
                 postReview(rating, s)
             }
 

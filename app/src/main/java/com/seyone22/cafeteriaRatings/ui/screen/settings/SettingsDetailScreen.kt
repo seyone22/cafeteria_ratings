@@ -597,9 +597,14 @@ fun AppearanceSettingsList(
     var editGreeting by remember { mutableStateOf(false) }
     var backgroundUri by remember { mutableStateOf("") }
     var greeting by remember { mutableStateOf("") }
+    var greetingTwo by remember { mutableStateOf("") }
+    var greetingThree by remember { mutableStateOf("") }
+
     LaunchedEffect(Unit) {
         backgroundUri = dataStoreManager.getFromDataStore("BACKGROUND_URI").first().toString()
         greeting = dataStoreManager.getFromDataStore("HOME_GREETING").first().toString()
+        greetingTwo = dataStoreManager.getFromDataStore("HOME_GREETING_TWO").first().toString()
+        greetingThree = dataStoreManager.getFromDataStore("HOME_GREETING_THREE").first().toString()
         useCustomBackground =
             dataStoreManager.getFromDataStore("USE_CUSTOM_BACKGROUND").first().toString()
                 .toBoolean()
@@ -634,6 +639,8 @@ fun AppearanceSettingsList(
             headlineContent = { Text(text = "Home Screen Greeting") },
             supportingContent = {
                 Text(text = greeting)
+                Text(text = greetingTwo)
+                Text(text = greetingThree)
             },
             modifier = Modifier.clickable {
                 editGreeting = true
@@ -687,12 +694,14 @@ fun AppearanceSettingsList(
             ) {
 // Draw a rectangle shape with rounded corners inside the dialog
                 var newGreeting by remember { mutableStateOf(greeting) }
+                var newGreetingTwo by remember { mutableStateOf(greetingTwo) }
+                var newGreetingThree by remember { mutableStateOf(greetingThree) }
                 val focusManager = LocalFocusManager.current
 
                 Card(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .height(235.dp)
+                        .height(405.dp)
                         .padding(16.dp),
                     shape = RoundedCornerShape(16.dp),
                 ) {
@@ -721,6 +730,34 @@ fun AppearanceSettingsList(
                                 )
                             })
                         )
+                        OutlinedTextField(
+                            modifier = Modifier.padding(0.dp, 8.dp),
+                            value = newGreetingTwo,
+                            onValueChange = {
+                                newGreetingTwo = it
+                            },
+                            label = { Text("Greeting Line Two") },
+                            singleLine = true,
+                            keyboardActions = KeyboardActions(onDone = {
+                                focusManager.moveFocus(
+                                    FocusDirection.Next
+                                )
+                            })
+                        )
+                        OutlinedTextField(
+                            modifier = Modifier.padding(0.dp, 8.dp),
+                            value = newGreetingThree,
+                            onValueChange = {
+                                newGreetingThree = it
+                            },
+                            label = { Text("Greeting Line Three") },
+                            singleLine = true,
+                            keyboardActions = KeyboardActions(onDone = {
+                                focusManager.moveFocus(
+                                    FocusDirection.Next
+                                )
+                            })
+                        )
 
                         Row(
                             modifier = Modifier
@@ -736,13 +773,17 @@ fun AppearanceSettingsList(
                             TextButton(
                                 onClick = {
                                     greeting = newGreeting
+                                    greetingTwo = newGreetingTwo
+                                    greetingThree = newGreetingThree
                                     coroutineScope.launch {
                                         dataStoreManager.saveToDataStore("HOME_GREETING", greeting)
+                                        dataStoreManager.saveToDataStore("HOME_GREETING_TWO", greetingTwo)
+                                        dataStoreManager.saveToDataStore("HOME_GREETING_THREE", greetingThree)
                                         editGreeting = false
                                     }
                                 },
                                 modifier = Modifier.padding(8.dp),
-                                enabled = newGreeting.isNotBlank()
+                                enabled = (newGreeting.isNotBlank() or newGreetingTwo.isNotBlank() or newGreetingThree.isNotBlank())
                             ) {
                                 Text("Confirm")
                             }

@@ -23,6 +23,8 @@ class DataStoreManager (private val context: Context) {
         val BACKGROUND_URI = stringPreferencesKey("BACKGROUND_URI")
         val USE_CUSTOM_BACKGROUND = stringPreferencesKey("USE_CUSTOM_BACKGROUND")
         val HOME_GREETING = stringPreferencesKey("HOME_GREETING")
+        val HOME_GREETING_TWO = stringPreferencesKey("HOME_GREETING_TWO")
+        val HOME_GREETING_THREE = stringPreferencesKey("HOME_GREETING_THREE")
         val ALLOW_AUTO = stringPreferencesKey("ALLOW_AUTO")
         val API_KEY = stringPreferencesKey("API_KEY")
         val SHOW_DEBUG = stringPreferencesKey("SHOW_DEBUG")
@@ -64,6 +66,12 @@ class DataStoreManager (private val context: Context) {
             }
             "HOME_GREETING" -> context.dataStore.data.map { prefs ->
                 prefs[HOME_GREETING] ?: "How was your meal?"
+            }
+            "HOME_GREETING_TWO" -> context.dataStore.data.map { prefs ->
+                prefs[HOME_GREETING_TWO] ?: "How was your meal?"
+            }
+            "HOME_GREETING_THREE" -> context.dataStore.data.map { prefs ->
+                prefs[HOME_GREETING_THREE] ?: "How was your meal?"
             }
             "ALLOW_AUTO" -> context.dataStore.data.map { prefs ->
                 prefs[ALLOW_AUTO] ?: "false"

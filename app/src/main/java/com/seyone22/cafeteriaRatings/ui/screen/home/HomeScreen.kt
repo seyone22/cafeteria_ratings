@@ -93,6 +93,8 @@ fun HomeScreen(
     var backgroundUri by remember { mutableStateOf("") }
     var useCustomBackground by remember { mutableStateOf(false) }
     var homeGreeting by remember { mutableStateOf("") }
+    var homeGreetingTwo by remember { mutableStateOf("") }
+    var homeGreetingThree by remember { mutableStateOf("") }
 
     LaunchedEffect(Unit) {
         backgroundUri = dataStoreManager.getFromDataStore("BACKGROUND_URI").first().toString()
@@ -100,6 +102,10 @@ fun HomeScreen(
             dataStoreManager.getFromDataStore("USE_CUSTOM_BACKGROUND").first().toString()
                 .toBoolean()
         homeGreeting = dataStoreManager.getFromDataStore("HOME_GREETING").first().toString()
+            .ifBlank { "How was your meal?" }
+        homeGreetingTwo = dataStoreManager.getFromDataStore("HOME_GREETING_TWO").first().toString()
+            .ifBlank { "How was your meal?" }
+        homeGreetingThree = dataStoreManager.getFromDataStore("HOME_GREETING_THREE").first().toString()
             .ifBlank { "How was your meal?" }
         showDebug = dataStoreManager.getFromDataStore("SHOW_DEBUG").first().toString().toBoolean()
     }
@@ -166,6 +172,20 @@ fun HomeScreen(
                 )
                 Text(
                     text = homeGreeting,
+                    style = MaterialTheme.typography.displayLarge,
+                    textAlign = TextAlign.Center,
+                    color = foreground,
+                    modifier = Modifier.fillMaxWidth()
+                )
+                Text(
+                    text = homeGreetingTwo,
+                    style = MaterialTheme.typography.displayLarge,
+                    textAlign = TextAlign.Center,
+                    color = foreground,
+                    modifier = Modifier.fillMaxWidth()
+                )
+                Text(
+                    text = homeGreetingThree,
                     style = MaterialTheme.typography.displayLarge,
                     textAlign = TextAlign.Center,
                     color = foreground,
@@ -280,6 +300,20 @@ fun HomeScreen(
                         color = foreground,
                         modifier = Modifier.fillMaxWidth()
                     )
+                    Text(
+                        text = homeGreetingTwo,
+                        style = MaterialTheme.typography.displayLarge,
+                        textAlign = TextAlign.Center,
+                        color = foreground,
+                        modifier = Modifier.fillMaxWidth()
+                    )
+                    Text(
+                        text = homeGreetingThree,
+                        style = MaterialTheme.typography.displayLarge,
+                        textAlign = TextAlign.Center,
+                        color = foreground,
+                        modifier = Modifier.fillMaxWidth()
+                    )
                     Row(
                         modifier = Modifier.align(Alignment.CenterHorizontally)
                     ) {
@@ -291,6 +325,7 @@ fun HomeScreen(
                                     var success = false
                                     coroutineScope.launch {
                                         success = viewModel.recordRating(rating, context)
+                                        Log.d("TAG", "HomeScreen: $success")
                                     }
                                     if (success) {
                                         Toast.makeText(
